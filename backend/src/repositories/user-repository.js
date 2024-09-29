@@ -6,26 +6,64 @@ class UserRepository {
     return await user.save();
   }
 
-  async get() {
-    return await User.find({}, "-__v").exec();
+  async get(query) {
+    const { page, limit, name, email } = query;
+    const options = {
+      page: page ? parseInt(page) : 1,
+      limit: limit ? parseInt(limit) : 25,
+      select: "-createdAt -__v -password",
+    };
+    if (name || email) {
+      return await User.paginate({ $or: [{ name }, { email }] }, options);
+    } else {
+      return await User.paginate({}, options);
+    }
   }
 
   async getByID(id) {
-    return await User.findOne({ _id: id }, "-__v").exec();
+    return await User.findOne(
+      { _id: id },
+      "-__v -createdAt -password"
+    ).exec();
   }
 
   async getByEmail(email) {
-    return await User.findOne({ email }, "-__v").exec();
+    return await User.findOne({ email }, "-__v -createdAt").exec();
   }
 
   async update(id, dados) {
-    return await User.findOneAndUpdate({ _id: id }, dados, {
-      new: true,
-    }).exec();
+    await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          name: dados.name,
+          email: dados.email,
+          fone: dados.fone,
+          roles: dados.roles,
+        },
+      },
+      {
+        new: true,
+      }
+    ).exec();
   }
 
   async delete(id) {
-    return await User.deleteOne({ _id: id });
+    await User.deleteOne({ _id: id });
+  }
+
+  async updatePassword(id, password) {
+    await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          password,
+        },
+      },
+      {
+        new: true,
+      }
+    ).exec();
   }
 }
 
