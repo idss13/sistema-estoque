@@ -11,7 +11,7 @@ class UserRepository {
     const options = {
       page: page ? parseInt(page) : 1,
       limit: limit ? parseInt(limit) : 25,
-      select: "-createdAt -__v -password",
+      select: "-password",
     };
     if (name || email) {
       return await User.paginate({ $or: [{ name }, { email }] }, options);
@@ -21,14 +21,11 @@ class UserRepository {
   }
 
   async getByID(id) {
-    return await User.findOne(
-      { _id: id },
-      "-__v -createdAt -password"
-    ).exec();
+    return await User.findOne({ _id: id }, "-password").exec();
   }
 
   async getByEmail(email) {
-    return await User.findOne({ email }, "-__v -createdAt").exec();
+    return await User.findOne({ email }).exec();
   }
 
   async update(id, dados) {
@@ -40,6 +37,9 @@ class UserRepository {
           email: dados.email,
           fone: dados.fone,
           roles: dados.roles,
+          passwordResetToken: dados.passwordResetToken,
+          passwordResetExpires: dados.passwordResetExpires,
+          password: dados.password,
         },
       },
       {
@@ -52,17 +52,15 @@ class UserRepository {
     await User.deleteOne({ _id: id });
   }
 
-  async updatePassword(id, password) {
-    await User.findOneAndUpdate(
-      { _id: id },
+  async getTokenPassword(token) {
+    return await User.findOne(
       {
-        $set: {
-          password,
+        passwordResetToken: token,
+        passwordResetExpires: {
+          $gt: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
         },
       },
-      {
-        new: true,
-      }
+      "-password"
     ).exec();
   }
 }
