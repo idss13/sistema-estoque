@@ -1,13 +1,13 @@
-const CategoryRepository = require("../repositories/category-repository");
+const SubCategoryRepository = require("../repositories/subcategory-repository");
 const Result = require("../utils/result");
 const ValidationContract = require("../utils/validator");
 
 exports.create = async (req, res) => {
   try {
-    const result = await CategoryRepository.create(req.body);
+    const result = await SubCategoryRepository.create(req.body);
     return res
       .status(201)
-      .json(new Result(true, "Categoria criada com sucesso", result, null));
+      .json(new Result(true, "SubCategoria criada com sucesso", result, null));
   } catch (error) {
     return res
       .status(500)
@@ -17,13 +17,13 @@ exports.create = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const result = await CategoryRepository.getAll(req.query);
+    const result = await SubCategoryRepository.getAll(req.query);
     return res
       .status(200)
       .json(
         new Result(
           true,
-          "Lista de categoria retornada com sucesso",
+          "Lista de subcategoria retornada com sucesso",
           result,
           null
         )
@@ -37,10 +37,10 @@ exports.getAll = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    await CategoryRepository.update(req.params.id, req.body);
+    await SubCategoryRepository.update(req.params.id, req.body);
     return res
       .status(200)
-      .json(new Result(true, "Categoria atualizada com sucesso", null, null));
+      .json(new Result(true, "SubCategoria atualizada com sucesso", null, null));
   } catch (error) {
     return res
       .status(500)
@@ -50,10 +50,10 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    await CategoryRepository.delete(req.params.id);
+    await SubCategoryRepository.delete(req.params.id);
     return res
       .status(200)
-      .json(new Result(true, "Categoria removida com sucesso", null, null));
+      .json(new Result(true, "SubCategoria removida com sucesso", null, null));
   } catch (error) {
     return res
       .status(500)

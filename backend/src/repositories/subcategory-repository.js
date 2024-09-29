@@ -1,9 +1,9 @@
-const Category = require("../models/category");
+const SubCategory = require("../models/subcategory");
 
-class CategoryRepository {
+class SubCategoryRepository {
   async create(dados) {
-    const category = new Category(dados);
-    return await category.save();
+    const subcategory = new SubCategory(dados);
+    return await subcategory.save();
   }
 
   async getAll(query) {
@@ -12,16 +12,17 @@ class CategoryRepository {
       page: page ? parseInt(page) : 1,
       limit: limit ? parseInt(limit) : 25,
     };
-    return await Category.paginate({}, options);
+    return await SubCategory.paginate({}, options);
   }
 
   async update(id, dados) {
-    await Category.findOneAndUpdate(
+    await SubCategory.findOneAndUpdate(
       { _id: id },
       {
         $set: {
           name: dados.name,
           description: dados.description,
+          categoryId: dados.categoryId,
         },
       },
       {
@@ -31,8 +32,8 @@ class CategoryRepository {
   }
 
   async delete(id) {
-    await Category.deleteOne({ _id: id });
+    await SubCategory.deleteOne({ _id: id });
   }
 }
 
-module.exports = new CategoryRepository();
+module.exports = new SubCategoryRepository();

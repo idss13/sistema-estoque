@@ -7,11 +7,9 @@ exports.create = async (req, res) => {
 
   contract.isRequired(req.body.name, "O nome do produto é obrigatório");
   contract.isRequired(
-    req.body.initialQtd,
-    "A quantidade inicial do produto é obrigatório"
+    req.body.subCategoryId,
+    "ID da subcategoria é obrigatório"
   );
-  contract.isRequired(req.body.categoryId, "ID da categoria é obrigatório");
-  contract.isRequired(req.body.code, "Código do produto é obrigatório");
 
   // Se os dados forem inválidos
   if (!contract.isValid()) {
@@ -31,15 +29,16 @@ exports.create = async (req, res) => {
   const product = {
     name: req.body.name,
     description: req.body.description,
-    code: req.body.code,
-    categoryId: req.body.categoryId,
+    subCategoryId: req.body.subCategoryId,
     costPrice: req.body.costPrice,
     salesPrice: req.body.salesPrice,
-    initialQtd: req.body.initialQtd,
+    availability: true,
     supplierId: req.body.supplierId,
     expirationDate: req.body.expirationDate
       ? new Date(req.body.expirationDate).setUTCHours(0, 0, 0, 0)
       : undefined,
+    weight: req.body.weight,
+    unitMeasurement: req.body.unitMeasurement,
     image: imageDocument !== null ? imageDocument : undefined,
   };
 

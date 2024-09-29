@@ -49,12 +49,20 @@ const userRoute = require("./routes/user-route");
 const categoryRoute = require("./routes/category-route");
 const supplierRoute = require("./routes/supplier-route");
 const productRoute = require("./routes/product-route");
+const subCategoryRoute = require("./routes/subcategory-route");
+const entryRoute = require("./routes/entry-route");
+const exitRoute = require("./routes/exit-route");
 
-app.use(defaultRoute);
-app.use(authRoute);
-app.use(userRoute);
-app.use(categoryRoute);
-app.use(supplierRoute);
-app.use(productRoute);
+app.use(
+  defaultRoute,
+  authRoute,
+  userRoute,
+  categoryRoute,
+  supplierRoute,
+  productRoute,
+  subCategoryRoute,
+  entryRoute,
+  exitRoute
+);
 
 module.exports = app;

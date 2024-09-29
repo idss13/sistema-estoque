@@ -20,6 +20,10 @@ class SupplierRepository {
     }
   }
   
+  async getByID(id) {
+    return await Supplier.findOne({ _id: id }).exec();
+  }
+
   async update(id, dados) {
     await Supplier.findOneAndUpdate({ _id: id }, dados, { new: true }).exec();
   }

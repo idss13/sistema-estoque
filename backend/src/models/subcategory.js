@@ -1,15 +1,20 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
 
-const CategorySchema = new mongoose.Schema(
+const SubCategorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "O nome da categoria é obrigatório"],
+      required: [true, "O nome da subcategoria é obrigatório"],
     },
     description: {
       type: String,
       sparse: true,
+    },
+    // Categoria
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
     },
     createdAt: {
       type: Date,
@@ -19,5 +24,5 @@ const CategorySchema = new mongoose.Schema(
   { versionKey: false }
 );
 
-CategorySchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("Category", CategorySchema);
+SubCategorySchema.plugin(mongoosePaginate);
+module.exports = mongoose.model("SubCategory", SubCategorySchema);

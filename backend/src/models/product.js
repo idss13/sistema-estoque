@@ -15,16 +15,10 @@ const ProductSchema = new mongoose.Schema(
       trim: true,
       sparse: true,
     },
-    // Código do Produto (SKU)
-    code: {
-      type: String,
-      unique: true,
-      trim: true,
-    },
-    // Categoria
-    categoryId: {
+    // SubCategoria
+    subCategoryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      ref: "SubCategory",
     },
     // Preço de custo
     costPrice: {
@@ -36,20 +30,36 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       trim: true,
     },
-    // Quantidade inicial
-    initialQtd: {
+    // Estoque
+    stock: {
       type: Number,
-      required: true,
       trim: true,
+      default: 0
+    },
+    // Disponibilidade
+    availability: {
+      type: Boolean,
+      default: false,
     },
     // Fornecedor
     supplierId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Supplier",
+      sparse: true,
     },
     // Data de validade
     expirationDate: {
       type: Date,
+      sparse: true,
+    },
+    // Peso
+    weight: {
+      type: String,
+      sparse: true,
+    },
+    // Unidade de Medida
+    unitMeasurement: {
+      type: String,
       sparse: true,
     },
     // Imagem do produto
@@ -69,9 +79,10 @@ const ProductSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: new Date(new Date().getTime() + -3 * 60 * 60 * 1000)
-    }
+      default: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+    },
   },
+  { versionKey: false }
 );
 
 ProductSchema.plugin(mongoosePaginate);
