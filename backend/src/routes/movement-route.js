@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const EntryController = require("../controllers/entry-controller");
+const MovementController = require("../controllers/movement-controller");
 const AuthService = require("../services/auth-service");
 
-router.post("/api/entry", AuthService.Auth, EntryController.createEntry);
+router.post("/api/movement", AuthService.Auth, MovementController.create);
 
 module.exports = router;

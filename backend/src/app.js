@@ -50,8 +50,7 @@ const categoryRoute = require("./routes/category-route");
 const supplierRoute = require("./routes/supplier-route");
 const productRoute = require("./routes/product-route");
 const subCategoryRoute = require("./routes/subcategory-route");
-const entryRoute = require("./routes/entry-route");
-const exitRoute = require("./routes/exit-route");
+const movementRoute = require("./routes/movement-route");
 
 app.use(
   defaultRoute,
@@ -61,8 +60,7 @@ app.use(
   supplierRoute,
   productRoute,
   subCategoryRoute,
-  entryRoute,
-  exitRoute
+  movementRoute
 );
 
 module.exports = app;
