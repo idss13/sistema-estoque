@@ -3,6 +3,14 @@ const Result = require("../utils/result");
 const ValidationContract = require("../utils/validator");
 
 exports.create = async (req, res) => {
+
+  const supplier = {
+    name: req.body.name,
+    cnpj: req.body.cnpj,
+    contact: req.body.contact,
+    address: req.body.address
+  }
+
   let contract = new ValidationContract();
 
   contract.isRequired(req.body.name, "O nome do fornecedor é obrigatório");
@@ -14,7 +22,7 @@ exports.create = async (req, res) => {
   }
 
   try {
-    const result = await SupplierRepository.create(req.body);
+    const result = await SupplierRepository.create(supplier);
     return res
       .status(201)
       .json(new Result(true, "Fornecedor criado com sucesso", result, null));
@@ -26,8 +34,16 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
+
+  const query = {
+    page: req.query.name,
+    limit: req.query.limit,
+    name: req.query.name,
+    cnpj: req.query.cnpj
+  }
+
   try {
-    const result = await SupplierRepository.get(req.query);
+    const result = await SupplierRepository.get(query);
     return res
       .status(200)
       .json(
@@ -46,8 +62,16 @@ exports.findAll = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+
+  const updateSupplier = {
+    name: req.body.name,
+    cnpj: req.body.cnpj,
+    contact: req.body.contact,
+    address: req.body.address
+  }
+
   try {
-    await SupplierRepository.update(req.params.id, req.body);
+    await SupplierRepository.update(req.params.id, updateSupplier);
     return res
       .status(200)
       .json(new Result(true, "Fornecedor atualizado com sucesso", null, null));

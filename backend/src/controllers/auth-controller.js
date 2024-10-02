@@ -7,6 +7,9 @@ const crypto = require("crypto");
 const SendPasswordResetEmail = require("../services/mailer");
 
 exports.register = async (req, res) => {
+
+  const { name, email, password, fone } = req.body;
+
   let contract = new ValidationContract();
   contract.hasMinLen(
     req.body.name,
@@ -26,10 +29,10 @@ exports.register = async (req, res) => {
     return;
   }
 
-  const { name, email, password, fone } = req.body;
-
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const user = { name, email, password: hashedPassword, fone, roles: ["user"] };
+  
   try {
     await UserRepository.create(user);
     return res
@@ -43,8 +46,9 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
 
+  const { email, password } = req.body;
+  
   const user = await UserRepository.getByEmail(email);
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -115,8 +119,12 @@ exports.refreshToken = async (req, res) => {
 };
 
 exports.requestPasswordReset = async (req, res) => {
+
+  const email = req.body.email
+  
   // Encontre o usuário pelo e-mail
-  const user = await UserRepository.getByEmail(req.body.email);
+  const user = await UserRepository.getByEmail(email);
+
   if (!user) {
     return res
       .status(400)
@@ -127,7 +135,7 @@ exports.requestPasswordReset = async (req, res) => {
     // Gera um token de recuperação de senha
     const token = crypto.randomBytes(32).toString("hex");
 
-    let expiresToken = new Date(new Date().getTime() + -3 * 60 * 60 * 1000);
+    let expiresToken = Date(new Date().toString());
     expiresToken.setHours(expiresToken.getHours() + 1);
 
     const dataToken = {
@@ -154,6 +162,7 @@ exports.requestPasswordReset = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
+
   let { token, newPassword } = req.body;
 
   const user = await UserRepository.getTokenPassword(token);

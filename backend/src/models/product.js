@@ -15,10 +15,10 @@ const ProductSchema = new mongoose.Schema(
       trim: true,
       sparse: true,
     },
-    // SubCategoria
-    subCategoryId: {
+    // Categoria
+    categoryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "SubCategory",
+      ref: "Category",
     },
     // Preço de custo
     costPrice: {
@@ -35,11 +35,6 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       trim: true,
       default: 0
-    },
-    // Disponibilidade
-    availability: {
-      type: Boolean,
-      default: false,
     },
     // Fornecedor
     supplierId: {
@@ -79,7 +74,7 @@ const ProductSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+      default: Date(new Date().toString()),
     },
   },
   { versionKey: false }

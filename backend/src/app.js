@@ -43,24 +43,14 @@ app.use((err, req, res, next) => {
 });
 
 // Rotas
-const defaultRoute = require("./routes/defaut-route");
-const authRoute = require("./routes/auth-route");
-const userRoute = require("./routes/user-route");
-const categoryRoute = require("./routes/category-route");
-const supplierRoute = require("./routes/supplier-route");
-const productRoute = require("./routes/product-route");
-const subCategoryRoute = require("./routes/subcategory-route");
-const movementRoute = require("./routes/movement-route");
-
 app.use(
-  defaultRoute,
-  authRoute,
-  userRoute,
-  categoryRoute,
-  supplierRoute,
-  productRoute,
-  subCategoryRoute,
-  movementRoute
+  require("./routes/defaut-route"),
+  require("./routes/auth-route"),
+  require("./routes/user-route"),
+  require("./routes/category-route"),
+  require("./routes/supplier-route"),
+  require("./routes/product-route"),
+  require("./routes/movement-route")
 );
 
 module.exports = app;

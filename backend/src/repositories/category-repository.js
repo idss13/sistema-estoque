@@ -7,10 +7,9 @@ class CategoryRepository {
   }
 
   async getAll(query) {
-    const { page, limit } = query;
     const options = {
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 25,
+      page: query.page ? parseInt(query.page) : 1,
+      limit: query.limit ? parseInt(query.limit) : 25,
     };
     return await Category.paginate({}, options);
   }

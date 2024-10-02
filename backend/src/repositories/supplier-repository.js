@@ -7,25 +7,37 @@ class SupplierRepository {
   }
 
   async get(query) {
-    const { page, limit, name, cnpj } = query;
     const options = {
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 25,
-      select: "-createdAt -__v",
+      page: query.page ? parseInt(query.page) : 1,
+      limit: query.limit ? parseInt(query.limit) : 25,
     };
-    if (name || cnpj) {
-      return await Supplier.paginate({ $or: [{ name }, { cnpj }] }, options);
+    if (query.name || query.cnpj) {
+      return await Supplier.paginate(
+        { $or: [{ name: query.name }, { cnpj: query.cnpj }] },
+        options
+      );
     } else {
       return await Supplier.paginate({}, options);
     }
   }
-  
+
   async getByID(id) {
     return await Supplier.findOne({ _id: id }).exec();
   }
 
   async update(id, dados) {
-    await Supplier.findOneAndUpdate({ _id: id }, dados, { new: true }).exec();
+    await Supplier.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          name: dados.name,
+          cnpj: dados.cnpj,
+          contact: dados.contact,
+          address: dados.address
+        },
+      },
+      { new: true }
+    ).exec();
   }
 
   async delete(id) {

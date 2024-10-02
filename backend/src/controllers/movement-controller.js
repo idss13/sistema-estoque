@@ -6,6 +6,7 @@ const ValidationContract = require("../utils/validator");
 const Movement = require("../models/movement");
 
 exports.create = async (req, res) => {
+
   const { productId, supplierId, amount, type, observations } = req.body;
 
   // Busca o produto
@@ -23,12 +24,13 @@ exports.create = async (req, res) => {
     }
 
     try {
+      
       const entry = new Movement({
         productId,
         supplierId,
         type,
         amount,
-        movementDate: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+        movementDate: Date(new Date().toString()).setUTCHours(0, 0, 0, 0),
         observations,
         userId: req.user.id,
       });
@@ -64,12 +66,13 @@ exports.create = async (req, res) => {
     }
 
     try {
+
       const exit = new Movement({
         productId,
         supplierId: undefined,
         type,
         amount,
-        movementDate: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+        movementDate: Date(new Date().toString()).setUTCHours(0, 0, 0, 0),
         observations,
         userId: req.user.id,
       });

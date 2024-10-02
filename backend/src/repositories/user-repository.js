@@ -7,14 +7,16 @@ class UserRepository {
   }
 
   async get(query) {
-    const { page, limit, name, email } = query;
     const options = {
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 25,
+      page: query.page ? parseInt(query.page) : 1,
+      limit: query.limit ? parseInt(query.limit) : 25,
       select: "-password",
     };
-    if (name || email) {
-      return await User.paginate({ $or: [{ name }, { email }] }, options);
+    if (query.name || query.email) {
+      return await User.paginate(
+        { $or: [{ name: query.name }, { email: query.name }] },
+        options
+      );
     } else {
       return await User.paginate({}, options);
     }
@@ -57,7 +59,7 @@ class UserRepository {
       {
         passwordResetToken: token,
         passwordResetExpires: {
-          $gt: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+          $gt: Date(new Date().toString()),
         },
       },
       "-password"

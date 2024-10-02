@@ -6,8 +6,16 @@ const SendPasswordResetEmail = require("../services/mailer");
 const bcrypt = require("bcryptjs");
 
 exports.findAll = async (req, res) => {
+  
+  const query = {
+    page: req.query.page,
+    limit: req.query.limit,
+    name: req.query.name,
+    email: req.query.email,
+  };
+
   try {
-    const result = await UserRepository.get(req.query);
+    const result = await UserRepository.get(query);
     return res
       .status(200)
       .json(
@@ -58,4 +66,3 @@ exports.delete = async (req, res) => {
       .json(new Result(false, "Houve falha na requisição", null, error));
   }
 };
-

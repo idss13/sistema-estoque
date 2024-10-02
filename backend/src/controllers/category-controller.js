@@ -3,8 +3,14 @@ const Result = require("../utils/result");
 const ValidationContract = require("../utils/validator");
 
 exports.create = async (req, res) => {
+  
+  const category = {
+    name: req.body.name,
+    description: req.body.description,
+  };
+
   try {
-    const result = await CategoryRepository.create(req.body);
+    const result = await CategoryRepository.create(category);
     return res
       .status(201)
       .json(new Result(true, "Categoria criada com sucesso", result, null));
@@ -16,14 +22,19 @@ exports.create = async (req, res) => {
 };
 
 exports.getAll = async (req, res) => {
+  const query = {
+    page: req.query.page,
+    limit: req.query.limit,
+  };
+
   try {
-    const result = await CategoryRepository.getAll(req.query);
+    const result = await CategoryRepository.getAll(query);
     return res
       .status(200)
       .json(
         new Result(
           true,
-          "Lista de categoria retornada com sucesso",
+          "Categoria(s) retornada(s) com sucesso",
           result,
           null
         )
@@ -36,8 +47,13 @@ exports.getAll = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  const updateCategory = {
+    name: req.body.name,
+    description: req.body.description,
+  };
+
   try {
-    await CategoryRepository.update(req.params.id, req.body);
+    await CategoryRepository.update(req.params.id, updateCategory);
     return res
       .status(200)
       .json(new Result(true, "Categoria atualizada com sucesso", null, null));
