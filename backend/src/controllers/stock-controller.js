@@ -33,7 +33,7 @@ exports.entryStock = async (req, res) => {
         productId,
         type: "entrada",
         quantity,
-        date: Date(new Date()),
+        date: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
         observations,
         userId: req.user.id,
       })
@@ -82,7 +82,7 @@ exports.exitStock = async (req, res) => {
         productId,
         type: "saida",
         quantity,
-        date: Date(new Date()),
+        date: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
         observations,
         userId: req.user.id,
       })
@@ -124,7 +124,7 @@ exports.adjustmentStock = async (req, res) => {
         type: "ajuste",
         quantity,
         quantityBefore: stock.quantity,
-        date: Date(new Date()),
+        date: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
         observations,
         userId: req.user.id,
       })

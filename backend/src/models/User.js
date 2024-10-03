@@ -38,7 +38,7 @@ const UserSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date(new Date()),
+      default: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
     },
   },
   { versionKey: false }

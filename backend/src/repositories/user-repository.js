@@ -12,11 +12,10 @@ class UserRepository {
       limit: query.limit ? parseInt(query.limit) : 25,
       select: "-password",
     };
-    if (query.name || query.email) {
-      return await User.paginate(
-        { $or: [{ name: query.name }, { email: query.name }] },
-        options
-      );
+    if (query.name) {
+      return await User.paginate({ name: { $regex: query.name } }, options);
+    } else if (query.email) {
+      return await User.paginate({ email: query.email }, options);
     } else {
       return await User.paginate({}, options);
     }
@@ -31,7 +30,7 @@ class UserRepository {
   }
 
   async update(id, dados) {
-    await User.findOneAndUpdate(
+    return await User.findOneAndUpdate(
       { _id: id },
       {
         $set: {
@@ -47,7 +46,9 @@ class UserRepository {
       {
         new: true,
       }
-    ).exec();
+    )
+    .select("-password")
+    .exec();
   }
 
   async delete(id) {
@@ -59,7 +60,7 @@ class UserRepository {
       {
         passwordResetToken: token,
         passwordResetExpires: {
-          $gt: Date(new Date()),
+          $gt: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
         },
       },
       "-password"

@@ -12,14 +12,17 @@ class StockRepository {
       limit: query.limit ? parseInt(query.limit) : 25,
     };
 
-    if (query.productId || query.procuctName) {
+    if (query.productId) {
       return await Stock.paginate(
-        {
-          $or: [
-            { productId: query.productId },
-            { "productId.name": { $regex: query.procuctName } },
-          ],
-        },
+        { productId: query.productId },
+        options
+      ).populate({
+        path: "productId",
+        populate: "categoryId supplierId",
+      });
+    } else if (query.procuctName) {
+      return await Stock.paginate(
+        { "productId.name": { $regex: query.procuctName }},
         options
       ).populate({
         path: "productId",

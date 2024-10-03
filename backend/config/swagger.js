@@ -1,13 +1,17 @@
+const swaggerJsdoc = require('swagger-jsdoc');
+
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "API - Sistema Controle de Estoque",
+      title: "Controle de Estoque",
       version: "1.0.0",
       description: "Documentação da API",
     },
   },
-  apis: ["./src/routes/*.js"],
+  apis: ["./src/utils/swagger-docs/*.js"],
 };
 
-module.exports = swaggerOptions;
+const swaggerSpecs = swaggerJsdoc(swaggerOptions);
+
+module.exports = swaggerSpecs;

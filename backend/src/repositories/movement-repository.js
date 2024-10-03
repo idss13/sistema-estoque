@@ -12,9 +12,18 @@ class MovementRepository {
       limit: query.limit ? parseInt(query.limit) : 25,
     };
 
-    if (
+    if (query.procuctName) {
+      return await Movement.paginate(
+        { "productId.name": { $regex: query.procuctName }},
+        options
+      )
+      .populate({
+        path: "productId",
+        populate: "categoryId supplierId",
+      })
+      .populate("userId");
+    } else if (
       query.productId ||
-      query.procuctName ||
       query.startDate ||
       query.endDate ||
       query.type
@@ -23,9 +32,8 @@ class MovementRepository {
         {
           $or: [
             { productId: query.productId },
-            { "productId.name": { $regex: query.procuctName } },
             { date: { $gte: query.startDate, $lte: query.endDate } },
-            { type: query.type }
+            { type: query.type },
           ],
         },
         options

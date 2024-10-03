@@ -17,18 +17,35 @@ class ProductRepository {
       page: query.page ? parseInt(query.page) : 1,
       limit: query.limit ? parseInt(query.limit) : 25,
     };
-    if (
-      query.name ||
-      query.categoryName ||
-      query.supplierName ||
+
+    if(query.name){
+      return await Product.paginate(
+        {name: { $regex: query.name }},
+        options
+      ).populate("categoryId supplierId");
+    }
+    else if(query.categoryName){
+      return await Product.paginate(
+        {"categoryId.name": { $regex: query.categoryName }},
+        options
+      ).populate("categoryId supplierId");
+    }
+    else if(query.supplierName){
+      return await Product.paginate(
+        {"supplierId.name": { $regex: query.supplierName }},
+        options
+      ).populate("categoryId supplierId");
+    }
+    else if (
+      query.categoryId ||
+      query.supplierId ||
       query.expirationDate
     ) {
       return await Product.paginate(
         {
           $or: [
-            { name: { $regex: query.name } },
-            { "categoryId.name": { $regex: query.categoryName } },
-            { "supplierId.name": { $regex: query.supplierName } },
+            { categoryId: query.categoryId },
+            { supplierId: query.supplierId },
             { expirationDate: query.expirationDate },
           ],
         },

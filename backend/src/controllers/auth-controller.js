@@ -8,7 +8,7 @@ const SendPasswordResetEmail = require("../services/mailer");
 
 exports.register = async (req, res) => {
 
-  const { name, email, password, fone } = req.body;
+  const { name, email, password, fone, roles } = req.body;
 
   let contract = new ValidationContract();
   contract.hasMinLen(
@@ -31,13 +31,13 @@ exports.register = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = { name, email, password: hashedPassword, fone, roles: ["user"] };
+  const user = { name, email, password: hashedPassword, fone, roles};
   
   try {
-    await UserRepository.create(user);
+    const result = await UserRepository.create(user);
     return res
       .status(201)
-      .json(new Result(true, "Usuário criado com sucesso", null, null));
+      .json(new Result(true, "Usuário criado com sucesso", result, null));
   } catch (error) {
     return res
       .status(400)
@@ -46,7 +46,6 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-
   const { email, password } = req.body;
   
   const user = await UserRepository.getByEmail(email);
@@ -59,6 +58,7 @@ exports.login = async (req, res) => {
     id: user._id,
     email: user.email,
     name: user.name,
+    roles: user.roles
   };
 
   const generateToken = jwt.sign(token, process.env.JWT_SECRET, {
@@ -95,6 +95,7 @@ exports.refreshToken = async (req, res) => {
     id: user._id,
     email: user.email,
     name: user.name,
+    roles: user.roles
   };
 
   const generateToken = jwt.sign(token, process.env.JWT_SECRET, {
@@ -135,7 +136,7 @@ exports.requestPasswordReset = async (req, res) => {
     // Gera um token de recuperação de senha
     const token = crypto.randomBytes(32).toString("hex");
 
-    let expiresToken = Date(new Date());
+    let expiresToken = new Date(new Date().getTime() + -3 * 60 * 60 * 1000);
     expiresToken.setHours(expiresToken.getHours() + 1);
 
     const dataToken = {

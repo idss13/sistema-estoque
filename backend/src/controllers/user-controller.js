@@ -6,7 +6,6 @@ const SendPasswordResetEmail = require("../services/mailer");
 const bcrypt = require("bcryptjs");
 
 exports.findAll = async (req, res) => {
-  
   const query = {
     page: req.query.page,
     limit: req.query.limit,
@@ -42,11 +41,25 @@ exports.getId = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  const { name, email, fone, roles } = req.body;
+
+  const userUpdate = {
+    name,
+    email,
+    fone,
+    roles,
+  };
+  
+  let contract = new ValidationContract();
+  if (email) {
+    contract.isEmail(email, "E-mail inválido");
+  }
+
   try {
-    await UserRepository.update(req.params.id, req.body);
+    const result = await UserRepository.update(req.params.id, userUpdate);
     return res
       .status(200)
-      .json(new Result(true, "Usuário atualizado com sucesso", null, null));
+      .json(new Result(true, "Usuário atualizado com sucesso", result, null));
   } catch (error) {
     return res
       .status(500)

@@ -73,6 +73,8 @@ exports.getAll = async (req, res) => {
     name: req.query.name,
     categoryName: req.query.categoryName,
     supplierName: req.query.supplierName,
+    categoryId: req.query.categoryId,
+    supplierId: req.query.supplierId,
     expirationDate: new Date(req.query.expirationDate).setUTCHours(0, 0, 0, 0),
   };
 

@@ -11,11 +11,10 @@ class SupplierRepository {
       page: query.page ? parseInt(query.page) : 1,
       limit: query.limit ? parseInt(query.limit) : 25,
     };
-    if (query.name || query.cnpj) {
-      return await Supplier.paginate(
-        { $or: [{ name: query.name }, { cnpj: query.cnpj }] },
-        options
-      );
+    if (query.name) {
+      return await Supplier.paginate({ name: { $regex: query.name } }, options);
+    } else if (query.cnpj) {
+      return await Supplier.paginate({ cnpj: query.cnpj }, options);
     } else {
       return await Supplier.paginate({}, options);
     }
@@ -33,7 +32,7 @@ class SupplierRepository {
           name: dados.name,
           cnpj: dados.cnpj,
           contact: dados.contact,
-          address: dados.address
+          address: dados.address,
         },
       },
       { new: true }
