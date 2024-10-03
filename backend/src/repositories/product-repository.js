@@ -28,7 +28,7 @@ class ProductRepository {
           $or: [
             { name: { $regex: query.name } },
             { "categoryId.name": { $regex: query.categoryName } },
-            { "supplier.Id.name": { $regex: query.supplierName } },
+            { "supplierId.name": { $regex: query.supplierName } },
             { expirationDate: query.expirationDate },
           ],
         },
@@ -49,6 +49,7 @@ class ProductRepository {
           categoryId: dados.categoryId,
           costPrice: dados.costPrice,
           salesPrice: dados.salesPrice,
+          minimumQuantity: dados.minimumQuantity,
           supplierId: dados.supplierId,
           expirationDate: dados.expirationDate,
           weight: dados.weight,
@@ -61,21 +62,7 @@ class ProductRepository {
       }
     ).exec();
   }
-
-  async updateAmountStock(id, amount) {
-    await SubCategory.findOneAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          stock: amount,
-        },
-      },
-      {
-        new: true,
-      }
-    ).exec();
-  }
-
+  
   async delete(id) {
     await Product.deleteOne({ _id: id });
   }

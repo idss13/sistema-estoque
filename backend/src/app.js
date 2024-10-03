@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
 // Habilita o CORS
+app.use(cors())
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -44,13 +45,13 @@ app.use((err, req, res, next) => {
 
 // Rotas
 app.use(
-  require("./routes/defaut-route"),
   require("./routes/auth-route"),
-  require("./routes/user-route"),
   require("./routes/category-route"),
-  require("./routes/supplier-route"),
+  require("./routes/defaut-route"),
   require("./routes/product-route"),
-  require("./routes/movement-route")
+  require("./routes/stock-route"),
+  require("./routes/supplier-route"),
+  require("./routes/user-route")
 );
 
 module.exports = app;

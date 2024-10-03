@@ -30,11 +30,9 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       trim: true,
     },
-    // Estoque
-    stock: {
-      type: Number,
-      trim: true,
-      default: 0
+    // Quantidade minima
+    minimumQuantity: {
+      type: Number
     },
     // Fornecedor
     supplierId: {
@@ -74,7 +72,7 @@ const ProductSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date(new Date().toString()),
+      default: Date(new Date()),
     },
   },
   { versionKey: false }

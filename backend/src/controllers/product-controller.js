@@ -9,6 +9,7 @@ exports.create = async (req, res) => {
     categoryId,
     costPrice,
     salesPrice,
+    minimumQuantity,
     supplierId,
     expirationDate,
     weight,
@@ -43,6 +44,7 @@ exports.create = async (req, res) => {
     categoryId,
     costPrice,
     salesPrice,
+    minimumQuantity,
     supplierId,
     expirationDate: expirationDate
       ? new Date(expirationDate).setUTCHours(0, 0, 0, 0)
@@ -101,13 +103,14 @@ exports.getId = async (req, res) => {
   }
 };
 
-exports.updateProduct = async (req, res) => {
+exports.update = async (req, res) => {
   const {
     name,
     description,
     categoryId,
     costPrice,
     salesPrice,
+    minimumQuantity,
     supplierId,
     expirationDate,
     weight,
@@ -132,6 +135,7 @@ exports.updateProduct = async (req, res) => {
     categoryId,
     costPrice,
     salesPrice,
+    minimumQuantity,
     supplierId,
     expirationDate: expirationDate
       ? new Date(expirationDate).setUTCHours(0, 0, 0, 0)

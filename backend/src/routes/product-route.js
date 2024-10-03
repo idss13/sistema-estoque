@@ -26,7 +26,7 @@ router.get(
 router.put(
   "/api/product/update/:id",
   AuthService.Auth,
-  ProductController.updateProduct
+  ProductController.update
 );
 
 router.delete(

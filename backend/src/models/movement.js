@@ -8,22 +8,20 @@ const MovementSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
-    supplierId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Supplier",
-      sparse: true,
-    },
     type: {
       type: String,
-      // Entrada ou Saida
-      enum: ["entry", "exit"],
+      enum: ["entrada", "saida", "ajuste"],
       required: true,
     },
-    amount: {
+    quantity: {
       type: Number,
       required: true,
     },
-    movementDate: {
+    quantityBefore: {
+      type: Number,
+      sparse: true,
+    },
+    date: {
       type: Date,
       required: true,
     },
@@ -34,6 +32,10 @@ const MovementSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+    createdAt: {
+      type: Date,
+      default: Date(new Date()),
     },
   },
   { versionKey: false }

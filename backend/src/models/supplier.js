@@ -43,7 +43,7 @@ const SupplierSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date(new Date().toString()),
+      default: Date(new Date()),
     },
   },
   { versionKey: false }

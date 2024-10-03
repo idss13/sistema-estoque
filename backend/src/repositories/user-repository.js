@@ -59,7 +59,7 @@ class UserRepository {
       {
         passwordResetToken: token,
         passwordResetExpires: {
-          $gt: Date(new Date().toString()),
+          $gt: Date(new Date()),
         },
       },
       "-password"
