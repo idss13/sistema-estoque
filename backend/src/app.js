@@ -3,8 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("../config/db");
 const swaggerUi = require("swagger-ui-express");
-const swagger = require("../config/swagger");
-const logger = require("../config/logger");
+const docSwagger = require("./swagger/docs");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -30,16 +29,7 @@ app.use(function (req, res, next) {
 connectDB();
 
 // Documentação Swagger
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swagger));
-
-// Logs
-app.use((req, res, next) => {
-  logger.info(`Request: ${req.method} ${req.url}`);
-  next();
-});
-app.use((err, req, res, next) => {
-  logger.error(`Error: ${err.message}`);
-});
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(docSwagger));
 
 // Rotas
 app.use(
