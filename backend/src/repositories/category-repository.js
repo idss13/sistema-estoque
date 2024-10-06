@@ -14,8 +14,12 @@ class CategoryRepository {
     return await Category.paginate({}, options);
   }
 
+  async getByID(id) {
+    return await Category.findOne({ _id: id }).exec();
+  }
+
   async update(id, dados) {
-    await Category.findOneAndUpdate(
+    return await Category.findOneAndUpdate(
       { _id: id },
       {
         $set: {
@@ -30,7 +34,13 @@ class CategoryRepository {
   }
 
   async delete(id) {
-    await Category.deleteOne({ _id: id });
+    return await Category.deleteOne({ _id: id })
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
   }
 }
 

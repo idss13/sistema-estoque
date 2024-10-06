@@ -24,6 +24,13 @@ ValidationContract.prototype.isEmail = (value, message) => {
   if (!reg.test(value)) errors.push({ success: false, message: message });
 };
 
+ValidationContract.prototype.isCpfCnpj = (value, message) => {
+  var reg = new RegExp(
+    /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})/
+  );
+  if (!reg.test(value)) errors.push({ success: false, message: message });
+};
+
 ValidationContract.prototype.errors = () => {
   return errors;
 };

@@ -1,9 +1,6 @@
 const UserRepository = require("../repositories/user-repository");
 const Result = require("../utils/result");
 const ValidationContract = require("../utils/validator");
-const crypto = require("crypto");
-const SendPasswordResetEmail = require("../services/mailer");
-const bcrypt = require("bcryptjs");
 
 exports.findAll = async (req, res) => {
   const query = {
@@ -15,6 +12,13 @@ exports.findAll = async (req, res) => {
 
   try {
     const result = await UserRepository.get(query);
+
+    if (!result.docs.length > 0) {
+      return res
+        .status(400)
+        .json(new Result(false, "Usuário(s) não encontrado(s)", null, null));
+    }
+
     return res
       .status(200)
       .json(
@@ -30,6 +34,13 @@ exports.findAll = async (req, res) => {
 exports.getId = async (req, res) => {
   try {
     const result = await UserRepository.getByID(req.params.id);
+
+    if (!result) {
+      return res
+        .status(400)
+        .json(new Result(false, "Usuário(s) não encontrado(s)", null, null));
+    }
+
     return res
       .status(200)
       .json(new Result(true, "Usuário retornado com sucesso", result, null));
@@ -49,10 +60,18 @@ exports.update = async (req, res) => {
     fone,
     roles,
   };
-  
+
   let contract = new ValidationContract();
   if (email) {
     contract.isEmail(email, "E-mail inválido");
+  }
+
+  const user = await UserRepository.getByID(req.params.id);
+
+  if (!user) {
+    return res
+      .status(400)
+      .json(new Result(false, "Usuário não encontrado", null, null));
   }
 
   try {
@@ -69,6 +88,14 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
+    const user = await UserRepository.getByID(req.params.id);
+
+    if (!user) {
+      return res
+        .status(400)
+        .json(new Result(false, "Usuário não encontrado", null, null));
+    }
+
     await UserRepository.delete(req.params.id);
     return res
       .status(200)

@@ -24,7 +24,7 @@ const SupplierSchema = new mongoose.Schema(
       },
     },
     address: {
-      road: {
+      street: {
         type: String,
         trim: true,
       },
@@ -36,6 +36,10 @@ const SupplierSchema = new mongoose.Schema(
         type: String,
         trim: true,
       },
+      complement:{
+        type: String,
+        trim: true
+      },
       cep: {
         type: String,
         trim: true,
@@ -43,7 +47,7 @@ const SupplierSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+      default: new Date(new Date().toUTCString() + '+03'),
     },
   },
   { versionKey: false }

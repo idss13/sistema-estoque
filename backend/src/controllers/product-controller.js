@@ -80,6 +80,15 @@ exports.getAll = async (req, res) => {
 
   try {
     const result = await ProductRepository.getAll(query);
+
+    if (!result.docs.length > 0) {
+      return res
+        .status(400)
+        .json(
+          new Result(false, "Produto(s) não encontrado(s)", null, null)
+        );
+    }
+
     return res
       .status(200)
       .json(
@@ -95,6 +104,13 @@ exports.getAll = async (req, res) => {
 exports.getId = async (req, res) => {
   try {
     const result = await ProductRepository.getByID(req.params.id);
+
+    if (!result) {
+      return res
+        .status(400)
+        .json(new Result(false, "Produto não encontrado", null, null));
+    }
+
     return res
       .status(200)
       .json(new Result(true, "Produto retornado com sucesso", result, null));
@@ -106,49 +122,60 @@ exports.getId = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  const {
-    name,
-    description,
-    categoryId,
-    costPrice,
-    salesPrice,
-    minimumQuantity,
-    supplierId,
-    expirationDate,
-    weight,
-    unitMeasurement,
-  } = req.body;
+  const product = await ProductRepository.getByID(req.params.id);
 
-  const image = req.file;
-
-  let imageDocument = null;
-  if (image) {
-    imageDocument = {
-      name: req.file.originalname,
-      type: req.file.mimetype,
-      size: req.file.size,
-      content: req.file.buffer,
-    };
+  if (!product) {
+    return res
+      .status(400)
+      .json(new Result(false, "Produto não encontrado", null, null));
   }
 
-  const product = {
-    name,
-    description,
-    categoryId,
-    costPrice,
-    salesPrice,
-    minimumQuantity,
-    supplierId,
-    expirationDate: expirationDate
-      ? new Date(expirationDate).setUTCHours(0, 0, 0, 0)
-      : undefined,
-    weight,
-    unitMeasurement,
-    image: imageDocument !== null ? imageDocument : undefined,
-  };
-
   try {
-    const result = await ProductRepository.updateProduct(product);
+    const {
+      name,
+      description,
+      categoryId,
+      costPrice,
+      salesPrice,
+      minimumQuantity,
+      supplierId,
+      expirationDate,
+      weight,
+      unitMeasurement,
+    } = req.body;
+
+    const image = req.file;
+
+    let imageDocument = null;
+    if (image) {
+      imageDocument = {
+        name: req.file.originalname,
+        type: req.file.mimetype,
+        size: req.file.size,
+        content: req.file.buffer,
+      };
+    }
+
+    const product = {
+      name,
+      description,
+      categoryId,
+      costPrice,
+      salesPrice,
+      minimumQuantity,
+      supplierId,
+      expirationDate: expirationDate
+        ? new Date(expirationDate).setUTCHours(0, 0, 0, 0)
+        : undefined,
+      weight,
+      unitMeasurement,
+      image: imageDocument !== null ? imageDocument : undefined,
+    };
+
+    const result = await ProductRepository.updateProduct(
+      req.params.id,
+      product
+    );
     return res
       .status(201)
       .json(new Result(true, "Produto atualizado com sucesso", result, null));
@@ -161,7 +188,16 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
+    const product = await ProductRepository.getByID(req.params.id);
+
+    if (!product) {
+      return res
+        .status(400)
+        .json(new Result(false, "Produto não encontrado", null, null));
+    }
+
     await ProductRepository.delete(req.params.id);
+
     return res
       .status(200)
       .json(new Result(true, "Produto removido com sucesso", null, null));

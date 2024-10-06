@@ -1,6 +1,7 @@
 const multer = require("multer");
 const path = require("path");
 const storage = multer.memoryStorage();
+const Result = require("../utils/result")
 
 const UploadService = multer({
   storage: storage,
@@ -16,7 +17,7 @@ const UploadService = multer({
     if (mimetype && extname) {
       return cb(null, true);
     } else {
-      return cb(new Error("Tipo de arquivo não suportado!"));
+      return cb(new Result(false, "Tipo de arquivo não suportado!", null, null));
     }
   },
 });

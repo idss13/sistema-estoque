@@ -3,7 +3,6 @@ const Result = require("../utils/result");
 const ValidationContract = require("../utils/validator");
 
 exports.create = async (req, res) => {
-  
   const category = {
     name: req.body.name,
     description: req.body.description,
@@ -29,15 +28,19 @@ exports.getAll = async (req, res) => {
 
   try {
     const result = await CategoryRepository.getAll(query);
+
+    if (!result.docs.length > 0) {
+      return res
+        .status(400)
+        .json(
+          new Result(false, "Categoria(s) não encontrada(s)", null, null)
+        );
+    }
+
     return res
       .status(200)
       .json(
-        new Result(
-          true,
-          "Categoria(s) retornada(s) com sucesso",
-          result,
-          null
-        )
+        new Result(true, "Categoria(s) retornada(s) com sucesso", result, null)
       );
   } catch (error) {
     return res
@@ -47,16 +50,27 @@ exports.getAll = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  const category = await CategoryRepository.getByID(req.params.id);
+
+  if (!category) {
+    return res
+      .status(400)
+      .json(new Result(false, "Categoria não encontrada", null, null));
+  }
+
   const updateCategory = {
     name: req.body.name,
     description: req.body.description,
   };
 
   try {
-    await CategoryRepository.update(req.params.id, updateCategory);
+    const result = await CategoryRepository.update(
+      req.params.id,
+      updateCategory
+    );
     return res
       .status(200)
-      .json(new Result(true, "Categoria atualizada com sucesso", null, null));
+      .json(new Result(true, "Categoria atualizada com sucesso", result, null));
   } catch (error) {
     return res
       .status(500)
@@ -66,7 +80,16 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
+    const category = await CategoryRepository.getByID(req.params.id);
+
+    if (!category) {
+      return res
+        .status(400)
+        .json(new Result(false, "Categoria não encontrada", null, null));
+    }
+
     await CategoryRepository.delete(req.params.id);
+
     return res
       .status(200)
       .json(new Result(true, "Categoria removida com sucesso", null, null));

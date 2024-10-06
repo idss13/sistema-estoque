@@ -136,7 +136,7 @@ exports.requestPasswordReset = async (req, res) => {
     // Gera um token de recuperação de senha
     const token = crypto.randomBytes(32).toString("hex");
 
-    let expiresToken = new Date(new Date().getTime() + -3 * 60 * 60 * 1000);
+    let expiresToken = new Date(new Date().toUTCString() + '+03');
     expiresToken.setHours(expiresToken.getHours() + 1);
 
     const dataToken = {

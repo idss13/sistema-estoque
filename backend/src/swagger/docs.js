@@ -4,10 +4,10 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "API - CDE",
+      title: "API - CDE(Controle de Estoque)",
       version: "1.0.0",
       description:
-        "Esta API foi desenvolvida para permitir o controle de estoque",
+        "Esta API foi desenvolvida para gerenciar controle de estoque",
     },
     tags: [
       {
@@ -21,6 +21,19 @@ const swaggerOptions = {
       {
         name: "Category",
         description: "Operações relacionadas a manipulação de categorias",
+      },
+      {
+        name: "Supplier",
+        description: "Operações relacionadas a manipulação de fornecedores",
+      },
+      {
+        name: "Product",
+        description: "Operações relacionadas a manipulação de produtos",
+      },
+      {
+        name: "Stock",
+        description:
+          "Operações relacioandas a manipulação de estoque e consulta de movimentações",
       },
     ],
     paths: {
@@ -1125,6 +1138,1052 @@ const swaggerOptions = {
                   },
                 },
               },
+            },
+          },
+        },
+      },
+      "api/supplier": {
+        post: {
+          summary: "Cria um novo fornecedor",
+          tags: ["Supplier"],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: {
+                      type: "string",
+                      description: "Nome do fornecedor",
+                    },
+                    cnpj: {
+                      type: "string",
+                      description: "CNPJ do fornecedor",
+                    },
+                    contact: {
+                      type: "string",
+                      description: "Contato do fornecedor",
+                    },
+                    address: {
+                      type: "string",
+                      description: "Endereço do fornecedor",
+                    },
+                  },
+                  required: ["name", "cnpj"],
+                },
+              },
+            },
+          },
+          responses: {
+            201: {
+              description: "Fornecedor criado com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: true,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Fornecedor criado com sucesso",
+                      },
+                      data: {
+                        type: "object",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Dados inválidos",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      errors: {
+                        type: "array",
+                        items: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Houve falha na requisição",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: false,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Houve falha na requisição",
+                      },
+                      error: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        get: {
+          summary: "Retorna uma lista de fornecedores",
+          tags: ["Supplier"],
+          parameters: [
+            {
+              name: "page",
+              in: "query",
+              required: false,
+              schema: {
+                type: "integer",
+              },
+              description: "Número da página para paginação",
+            },
+            {
+              name: "limit",
+              in: "query",
+              required: false,
+              schema: {
+                type: "integer",
+              },
+              description: "Número de fornecedores por página",
+            },
+            {
+              name: "name",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+              },
+              description: "Nome do fornecedor",
+            },
+            {
+              name: "cnpj",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+              },
+              description: "CNPJ do fornecedor",
+            },
+          ],
+          responses: {
+            200: {
+              description: "Fornecedor(es) retornado(s) com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: true,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Fornecedor(es) retornado(s) com sucesso",
+                      },
+                      data: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Houve falha na requisição",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: false,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Houve falha na requisição",
+                      },
+                      error: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      "api/supplier/update/{id}": {
+        put: {
+          summary: "Atualiza um fornecedor pelo ID",
+          tags: ["Supplier"],
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              schema: {
+                type: "string",
+              },
+              description: "ID do fornecedor",
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: {
+                      type: "string",
+                      description: "Nome do fornecedor",
+                    },
+                    cnpj: {
+                      type: "string",
+                      description: "CNPJ do fornecedor",
+                    },
+                    contact: {
+                      type: "string",
+                      description: "Contato do fornecedor",
+                    },
+                    address: {
+                      type: "string",
+                      description: "Endereço do fornecedor",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: "Fornecedor atualizado com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: true,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Fornecedor atualizado com sucesso",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Fornecedor não encontrado",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: false,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Fornecedor não encontrado",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Houve falha na requisição",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: false,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Houve falha na requisição",
+                      },
+                      error: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      "api/supplier/{id}": {
+        delete: {
+          summary: "Remove um fornecedor pelo ID",
+          tags: ["Supplier"],
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              schema: {
+                type: "string",
+              },
+              description: "ID do fornecedor",
+            },
+          ],
+          responses: {
+            200: {
+              description: "Fornecedor removido com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: true,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Fornecedor removido com sucesso",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Fornecedor não encontrado",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: false,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Fornecedor não encontrado",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Houve falha na requisição",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: {
+                        type: "boolean",
+                        example: false,
+                      },
+                      message: {
+                        type: "string",
+                        example: "Houve falha na requisição",
+                      },
+                      error: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      "api/product": {
+        post: {
+          summary: "Cria um novo produto",
+          tags: ["Product"],
+          requestBody: {
+            required: true,
+            content: {
+              "multipart/form-data": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: {
+                      type: "string",
+                      description: "Nome do produto",
+                    },
+                    description: {
+                      type: "string",
+                      description: "Descrição do produto",
+                    },
+                    categoryId: {
+                      type: "string",
+                      description: "ID da categoria",
+                    },
+                    costPrice: {
+                      type: "number",
+                      format: "float",
+                      description: "Preço de custo",
+                    },
+                    salesPrice: {
+                      type: "number",
+                      format: "float",
+                      description: "Preço de venda",
+                    },
+                    minimumQuantity: {
+                      type: "integer",
+                      description: "Quantidade mínima",
+                    },
+                    supplierId: {
+                      type: "string",
+                      description: "ID do fornecedor",
+                    },
+                    expirationDate: {
+                      type: "string",
+                      format: "date",
+                      description: "Data de validade",
+                    },
+                    weight: {
+                      type: "number",
+                      format: "float",
+                      description: "Peso do produto",
+                    },
+                    unitMeasurement: {
+                      type: "string",
+                      description: "Unidade de medida",
+                    },
+                    image: {
+                      type: "string",
+                      format: "binary",
+                      description: "Imagem do produto",
+                    },
+                  },
+                  required: ["name", "categoryId"],
+                },
+              },
+            },
+          },
+          responses: {
+            201: {
+              description: "Produto criado com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Erro de validação",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Erro no servidor",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+          },
+        },
+        get: {
+          summary: "Obtém todos os produtos",
+          tags: ["Product"],
+          parameters: [
+            {
+              name: "page",
+              in: "query",
+              required: false,
+              schema: {
+                type: "integer",
+              },
+            },
+            {
+              name: "limit",
+              in: "query",
+              required: false,
+              schema: {
+                type: "integer",
+              },
+            },
+            {
+              name: "name",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+              },
+            },
+            {
+              name: "categoryName",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+              },
+            },
+            {
+              name: "supplierName",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+              },
+            },
+            {
+              name: "categoryId",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+              },
+            },
+            {
+              name: "supplierId",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+              },
+            },
+            {
+              name: "expirationDate",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string",
+                format: "date",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Lista de produtos retornada com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Produto(s) não encontrado(s)",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Erro no servidor",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      "api/product/id/{id}": {
+        get: {
+          summary: "Obtém um produto pelo ID",
+          tags: ["Product"],
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              schema: {
+                type: "string",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Produto retornado com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Produto não encontrado",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Erro no servidor",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      "api/product/update/{id}": {
+        put: {
+          summary: "Atualiza um produto pelo ID",
+          tags: ["Product"],
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              schema: {
+                type: "string",
+              },
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              "multipart/form-data": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: {
+                      type: "string",
+                      description: "Nome do produto",
+                    },
+                    description: {
+                      type: "string",
+                      description: "Descrição do produto",
+                    },
+                    categoryId: {
+                      type: "string",
+                      description: "ID da categoria",
+                    },
+                    costPrice: {
+                      type: "number",
+                      format: "float",
+                      description: "Preço de custo",
+                    },
+                    salesPrice: {
+                      type: "number",
+                      format: "float",
+                      description: "Preço de venda",
+                    },
+                    minimumQuantity: {
+                      type: "integer",
+                      description: "Quantidade mínima",
+                    },
+                    supplierId: {
+                      type: "string",
+                      description: "ID do fornecedor",
+                    },
+                    expirationDate: {
+                      type: "string",
+                      format: "date",
+                      description: "Data de validade",
+                    },
+                    weight: {
+                      type: "number",
+                      format: "float",
+                      description: "Peso do produto",
+                    },
+                    unitMeasurement: {
+                      type: "string",
+                      description: "Unidade de medida",
+                    },
+                    image: {
+                      type: "string",
+                      format: "binary",
+                      description: "Imagem do produto",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            201: {
+              description: "Produto atualizado com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Produto não encontrado",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Erro no servidor",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      "api/product/:id": {
+        delete: {
+          summary: "Remove um produto pelo ID",
+          tags: ["Product"],
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              schema: {
+                type: "string",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Produto removido com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            400: {
+              description: "Produto não encontrado",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+            500: {
+              description: "Erro no servidor",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Result",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      "api/stock/entry": {
+        post: {
+          summary: "Registrar entrada de produto no estoque",
+          tags: ["Stock"],
+          parameters: [
+            {
+              in: "body",
+              name: "body",
+              description: "Informações da entrada de estoque",
+              required: true,
+              schema: {
+                type: "object",
+                properties: {
+                  productId: {
+                    type: "string",
+                  },
+                  quantity: {
+                    type: "integer",
+                  },
+                  observations: {
+                    type: "string",
+                  },
+                },
+                required: ["productId", "quantity"],
+              },
+            },
+          ],
+          responses: {
+            201: {
+              description: "Entrada registrada com sucesso",
+            },
+            400: {
+              description: "Produto não encontrado",
+            },
+            500: {
+              description: "Houve falha na requisição",
+            },
+          },
+        },
+      },
+      "api/stock/exit": {
+        post: {
+          summary: "Registrar saída de produto do estoque",
+          tags: ["Stock"],
+          parameters: [
+            {
+              in: "body",
+              name: "body",
+              description: "Informações da saída de estoque",
+              required: true,
+              schema: {
+                type: "object",
+                properties: {
+                  productId: {
+                    type: "string",
+                  },
+                  quantity: {
+                    type: "integer",
+                  },
+                  observations: {
+                    type: "string",
+                  },
+                },
+                required: ["productId", "quantity"],
+              },
+            },
+          ],
+          responses: {
+            201: {
+              description: "Saída registrada com sucesso",
+            },
+            400: {
+              description: "Produto não encontrado ou quantidade insuficiente",
+            },
+            500: {
+              description: "Houve falha na requisição",
+            },
+          },
+        },
+      },
+      "api/stock/adjustment": {
+        post: {
+          summary: "Ajustar quantidade de produto no estoque",
+          tags: ["Stock"],
+          parameters: [
+            {
+              in: "body",
+              name: "body",
+              description: "Informações do ajuste de estoque",
+              required: true,
+              schema: {
+                type: "object",
+                properties: {
+                  productId: {
+                    type: "string",
+                  },
+                  quantity: {
+                    type: "integer",
+                  },
+                  observations: {
+                    type: "string",
+                  },
+                },
+                required: ["productId", "quantity"],
+              },
+            },
+          ],
+          responses: {
+            201: {
+              description: "Ajuste registrado com sucesso",
+            },
+            400: {
+              description: "Produto não encontrado em estoque",
+            },
+            500: {
+              description: "Houve falha na requisição",
+            },
+          },
+        },
+      },
+      "api/stock/remove/{productid}": {
+        delete: {
+          summary: "Remover produto do estoque",
+          tags: ["Stock"],
+          parameters: [
+            {
+              name: "productId",
+              in: "path",
+              required: true,
+              type: "string",
+              description: "ID do produto a ser removido do estoque",
+            },
+          ],
+          responses: {
+            201: {
+              description: "Estoque do produto removido com sucesso",
+            },
+            400: {
+              description: "Produto não encontrado em estoque",
+            },
+            500: {
+              description: "Houve falha na requisição",
+            },
+          },
+        },
+      },
+      "api/stock": {
+        get: {
+          summary: "Consultar estoque atual",
+          tags: ["Stock"],
+          parameters: [
+            {
+              name: "page",
+              in: "query",
+              type: "integer",
+              description: "Número da página",
+            },
+            {
+              name: "limit",
+              in: "query",
+              type: "integer",
+              description: "Limite de itens por página",
+            },
+            {
+              name: "productId",
+              in: "query",
+              type: "string",
+              description: "ID do produto",
+            },
+            {
+              name: "productName",
+              in: "query",
+              type: "string",
+              description: "Nome do produto",
+            },
+          ],
+          responses: {
+            200: {
+              description: "Estoque retornado com sucesso",
+            },
+            400: {
+              description: "Estoque não encontrado",
+            },
+            500: {
+              description: "Houve falha na requisição",
+            },
+          },
+        },
+      },
+      "api/stock/movements": {
+        get: {
+          summary: "Consultar movimentações de estoque",
+          tags: ["Stock"],
+          parameters: [
+            {
+              name: "page",
+              in: "query",
+              type: "integer",
+              description: "Número da página",
+            },
+            {
+              name: "limit",
+              in: "query",
+              type: "integer",
+              description: "Limite de itens por página",
+            },
+            {
+              name: "productId",
+              in: "query",
+              type: "string",
+              description: "ID do produto",
+            },
+            {
+              name: "productName",
+              in: "query",
+              type: "string",
+              description: "Nome do produto",
+            },
+            {
+              name: "startDate",
+              in: "query",
+              type: "string",
+              format: "date",
+              description: "Data de início para filtragem",
+            },
+            {
+              name: "endDate",
+              in: "query",
+              type: "string",
+              format: "date",
+              description: "Data de término para filtragem",
+            },
+            {
+              name: "type",
+              in: "query",
+              type: "string",
+              description: "Tipo de movimentação",
+            },
+          ],
+          responses: {
+            200: {
+              description: "Movimentação de estoque retornada com sucesso",
+            },
+            400: {
+              description: "Movimentação de estoque não encontrada",
+            },
+            500: {
+              description: "Houve falha na requisição",
             },
           },
         },

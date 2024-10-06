@@ -13,7 +13,7 @@ const CategorySchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+      default: new Date(new Date().toUTCString() + '+03'),
     },
   },
   { versionKey: false }

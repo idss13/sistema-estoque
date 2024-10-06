@@ -1,4 +1,6 @@
 const Product = require("../models/product");
+const Supplier = require("../models/supplier");
+const Category = require("../models/category");
 
 class ProductRepository {
   async create(dados) {
@@ -16,31 +18,28 @@ class ProductRepository {
     const options = {
       page: query.page ? parseInt(query.page) : 1,
       limit: query.limit ? parseInt(query.limit) : 25,
+      populate: "categoryId supplierId",
     };
 
-    if(query.name){
-      return await Product.paginate(
-        {name: { $regex: query.name }},
-        options
-      ).populate("categoryId supplierId");
-    }
-    else if(query.categoryName){
-      return await Product.paginate(
-        {"categoryId.name": { $regex: query.categoryName }},
-        options
-      ).populate("categoryId supplierId");
-    }
-    else if(query.supplierName){
-      return await Product.paginate(
-        {"supplierId.name": { $regex: query.supplierName }},
-        options
-      ).populate("categoryId supplierId");
-    }
-    else if (
-      query.categoryId ||
-      query.supplierId ||
-      query.expirationDate
-    ) {
+    if (query.name) {
+      return await Product.paginate({ name: { $regex: query.name } }, options);
+    } else if (query.categoryName) {
+      const find = await Category.findOne({
+        name: { $regex: query.categoryName },
+      }).select("_id");
+
+      if (find) {
+        return await Product.paginate({ categoryId: find._id }, options);
+      }
+    } else if (query.supplierName) {
+      const find = await Supplier.findOne({
+        name: { $regex: query.supplierName },
+      }).select("_id");
+
+      if (find) {
+        return await Product.paginate({ supplierId: find._id }, options);
+      }
+    } else if (query.categoryId || query.supplierId || query.expirationDate) {
       return await Product.paginate(
         {
           $or: [
@@ -50,14 +49,14 @@ class ProductRepository {
           ],
         },
         options
-      ).populate("categoryId supplierId");
+      );
     } else {
-      return await Product.paginate({}, options).populate("categoryId supplierId");
+      return await Product.paginate({}, options);
     }
   }
 
   async updateProduct(id, dados) {
-    await Product.findOneAndUpdate(
+    return await Product.findOneAndUpdate(
       { _id: id },
       {
         $set: {
@@ -79,7 +78,7 @@ class ProductRepository {
       }
     ).exec();
   }
-  
+
   async delete(id) {
     await Product.deleteOne({ _id: id });
   }

@@ -1,4 +1,6 @@
+const { populate } = require("../models/category");
 const Movement = require("../models/movement");
+const Product = require("../models/product");
 
 class MovementRepository {
   async create(dados) {
@@ -10,18 +12,27 @@ class MovementRepository {
     const options = {
       page: query.page ? parseInt(query.page) : 1,
       limit: query.limit ? parseInt(query.limit) : 25,
+      populate: [
+        {
+          path: "productId",
+          populate: "categoryId supplierId",
+        },
+        {
+          path: "userId",
+          select: "-password"
+        },
+      ],
+      // Para melhor performance, retorna objetos JavaScript simples
+      // lean: true, 
     };
 
     if (query.procuctName) {
-      return await Movement.paginate(
-        { "productId.name": { $regex: query.procuctName }},
-        options
-      )
-      .populate({
-        path: "productId",
-        populate: "categoryId supplierId",
-      })
-      .populate("userId");
+      const find = await Product.findOne({
+        name: { $regex: query.procuctName },
+      }).select("_id");
+      if (find) {
+        return await Movement.paginate({ productId: find._id }, options);
+      }
     } else if (
       query.productId ||
       query.startDate ||
@@ -37,12 +48,7 @@ class MovementRepository {
           ],
         },
         options
-      )
-      .populate({
-        path: "productId",
-        populate: "categoryId supplierId",
-      })
-      .populate("userId");
+      );
     } else {
       return await Movement.paginate({}, options);
     }

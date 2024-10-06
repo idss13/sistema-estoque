@@ -60,7 +60,7 @@ class UserRepository {
       {
         passwordResetToken: token,
         passwordResetExpires: {
-          $gt: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+          $gt: new Date(new Date().toUTCString() + '+03'),
         },
       },
       "-password"

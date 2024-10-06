@@ -3,18 +3,18 @@ const Result = require("../utils/result");
 const ValidationContract = require("../utils/validator");
 
 exports.create = async (req, res) => {
-
   const supplier = {
     name: req.body.name,
     cnpj: req.body.cnpj,
     contact: req.body.contact,
-    address: req.body.address
-  }
+    address: req.body.address,
+  };
 
   let contract = new ValidationContract();
 
   contract.isRequired(req.body.name, "O nome do fornecedor é obrigatório");
   contract.isRequired(req.body.cnpj, "CNPJ do fornecedor é obrigatório");
+  contract.isCpfCnpj(req.body.cnpj, "CNPJ inválido");
 
   // Se os dados forem inválidos
   if (!contract.isValid()) {
@@ -34,16 +34,24 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-
   const query = {
     page: req.query.name,
     limit: req.query.limit,
     name: req.query.name,
-    cnpj: req.query.cnpj
-  }
+    cnpj: req.query.cnpj,
+  };
 
   try {
     const result = await SupplierRepository.get(query);
+
+    if (!result.docs.length > 0) {
+      return res
+        .status(400)
+        .json(
+          new Result(false, "Fornecedor(es) não encontrado(s)", null, null)
+        );
+    }
+
     return res
       .status(200)
       .json(
@@ -62,13 +70,20 @@ exports.findAll = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  const supplier = await SupplierRepository.getByID(req.params.id);
+
+  if (!supplier) {
+    return res
+      .status(400)
+      .json(new Result(false, "Fornecedor não encontrado", null, null));
+  }
 
   const updateSupplier = {
     name: req.body.name,
     cnpj: req.body.cnpj,
     contact: req.body.contact,
-    address: req.body.address
-  }
+    address: req.body.address,
+  };
 
   try {
     await SupplierRepository.update(req.params.id, updateSupplier);
@@ -83,8 +98,16 @@ exports.update = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
+  const supplier = await SupplierRepository.getByID(req.params.id);
+
+  if (!supplier) {
+    return res
+      .status(400)
+      .json(new Result(false, "Fornecedor não encontrado", null, null));
+  }
+
   try {
-    await UserRepository.delete(req.params.id);
+    await SupplierRepository.delete(req.params.id);
     return res
       .status(200)
       .json(new Result(true, "Fornecedor removido com sucesso", null, null));

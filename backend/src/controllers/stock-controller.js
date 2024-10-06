@@ -28,16 +28,14 @@ exports.entryStock = async (req, res) => {
     }
 
     // Salva a entrada
-    const result = await MovementRepository.create(
-      new Movement({
-        productId,
-        type: "entrada",
-        quantity,
-        date: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
-        observations,
-        userId: req.user.id,
-      })
-    );
+    const result = await MovementRepository.create({
+      productId,
+      type: "entrada",
+      quantity,
+      date: new Date(new Date().setUTCHours(0, 0, 0, 0)),
+      observations,
+      userId: req.user.id,
+    });
 
     // Atualiza a quantidade do produto
     await StockRepository.updateQuantity(stock._id, stock.quantity);
@@ -82,7 +80,7 @@ exports.exitStock = async (req, res) => {
         productId,
         type: "saida",
         quantity,
-        date: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+        date: new Date(new Date().setUTCHours(0, 0, 0, 0)),
         observations,
         userId: req.user.id,
       })
@@ -124,7 +122,7 @@ exports.adjustmentStock = async (req, res) => {
         type: "ajuste",
         quantity,
         quantityBefore: stock.quantity,
-        date: new Date(new Date().getTime() + -3 * 60 * 60 * 1000),
+        date: new Date(new Date().setUTCHours(0, 0, 0, 0)),
         observations,
         userId: req.user.id,
       })
@@ -146,15 +144,14 @@ exports.adjustmentStock = async (req, res) => {
 // Remove produto do estoque
 exports.removeProductStock = async (req, res) => {
   try {
-    const { productId } = req.params.productid;
 
-    const stock = await StockRepository.getByProductId(productId);
+    const stock = await StockRepository.getByProductId(req.params.productid);
 
     if (!stock) {
       return res
         .status(400)
         .json(
-          new Result(true, "Produto não encontrado em estoque", null, null)
+          new Result(false, "Produto não encontrado em estoque", null, null)
         );
     }
 
@@ -183,6 +180,13 @@ exports.getStock = async (req, res) => {
 
   try {
     const result = await StockRepository.getAll(query);
+
+    if (!result.docs.length > 0) {
+      return res
+        .status(400)
+        .json(new Result(false, "Estoque não encontrado", null, null));
+    }
+
     return res
       .status(200)
       .json(new Result(true, "Estoque retornado com sucesso", result, null));
@@ -195,18 +199,36 @@ exports.getStock = async (req, res) => {
 
 // Consulta movimentações
 exports.getMovements = async (req, res) => {
-  const query = {
-    page: req.query.page,
-    limit: req.query.limit,
-    productId: req.query.productId,
-    procuctName: req.query.productName,
-    startDate: new Date(req.query.startDate),
-    endDate: new Date(req.query.endDate),
-    type: req.query.type
-  };
-
   try {
+    const query = {
+      page: req.query.page,
+      limit: req.query.limit,
+      productId: req.query.productId,
+      procuctName: req.query.productName,
+      startDate: req.query.startDate
+        ? new Date(new Date(req.query.startDate).setUTCHours(0, 0, 0, 0))
+        : undefined,
+      endDate: req.query.endDate
+        ? new Date(new Date(req.query.endDate).setUTCHours(0, 0, 0, 0))
+        : undefined,
+      type: req.query.type,
+    };
+
     const result = await MovementRepository.get(query);
+
+    if (!result.docs.length > 0) {
+      return res
+        .status(400)
+        .json(
+          new Result(
+            false,
+            "Movimentação de estoque não encontrado",
+            null,
+            null
+          )
+        );
+    }
+
     return res
       .status(200)
       .json(
